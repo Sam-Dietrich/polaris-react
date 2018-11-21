@@ -9,22 +9,16 @@ const argv = require('yargs').argv;
 
 const config = require('./webpack.config.js');
 const render = require('./render.tsx').default;
-const readMarkDownFiles = require('./parseMarkdown.js').default;
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const codeExamples = readMarkDownFiles();
-
 function appMiddleware(req, res, next) {
-  const html = render(
-    [
-      {path: '/assets/vendors.js'},
-      {path: '/assets/polaris.js'},
-      {path: '/assets/main.js'},
-    ],
-    {codeExamples},
-  );
+  const html = render([
+    {path: '/assets/vendors.js'},
+    {path: '/assets/polaris.js'},
+    {path: '/assets/main.js'},
+  ]);
 
   res.send(html);
   next();

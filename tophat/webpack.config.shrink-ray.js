@@ -33,14 +33,14 @@ module.exports = {
           priority: -20,
         },
         polaris: {
-          // test accepts a regex. The replace escapes any special characters
-          // in the path so they are treated literally
-          // see https://github.com/benjamingr/RegExp.escape/blob/master/polyfill.js
-          test: new RegExp(
-            path
-              .resolve(__dirname, '..', 'src')
-              .replace(/[\\^$*+?.()|[\]{}]/g, '\\$&'),
-          ),
+          // Include polaris code files, but not markdown files
+          // We don't want to include the readme samples in here
+          test: (module) => {
+            const name = module.nameForCondition && module.nameForCondition();
+            const polarisDir = path.resolve(__dirname, '..', 'src');
+
+            return name && name.startsWith(polarisDir) && !name.endsWith('.md');
+          },
           name: 'polaris',
           priority: -15,
           chunks: 'all',
@@ -72,6 +72,10 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test: /\.md$/,
+        use: [{loader: `${__dirname}/parseMarkdown.js`}],
+      },
       {
         test(resource) {
           return ICON_PATH_REGEX.test(resource) && resource.endsWith('.svg');

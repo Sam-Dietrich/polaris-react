@@ -2,7 +2,6 @@ import * as React from 'react';
 import {render} from 'react-dom';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import * as Polaris from '@shopify/polaris';
-import {getSerialized} from '@shopify/react-serialize';
 import kebabCase from 'lodash/kebabCase';
 
 import Example, {ExampleProps} from './Example';
@@ -14,7 +13,11 @@ interface Component {
   examples: ExampleProps[];
 }
 
-const {data: components}: {data: Component[]} = getSerialized('codeExamples');
+// At the moment the loader pulls in ALL component READMEs based upon a glob
+// The filename here has no effect. we just need something that triggers using
+// the markdown loader
+// eslint-disable-next-line typescript/no-var-requires
+const components: Component[] = require('../src/components/README.md');
 
 function renderApp() {
   render(

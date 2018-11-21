@@ -6,10 +6,24 @@ import chalk from 'chalk';
 import grayMatter from 'gray-matter';
 import transpileExample from './transpileExample';
 
+module.exports = function loader() {
+  const files = glob.sync(`${__dirname}/../src/components/***/README.md`);
+
+  // Treat all files as depdendencies so that if any of them change then we
+  // reparse all of them
+  files.forEach((file) => {
+    this.addDependency(file);
+  });
+  this.cacheable();
+
+  const stringyData = JSON.stringify(parseMarkdown(files), null, 2);
+
+  return `module.exports = ${stringyData};`;
+};
+
 const exampleForRegExp = /<!-- example-for: ([\w\s,]+) -->/u;
 
-export default function parseMarkdown() {
-  const files = glob.sync(`${__dirname}/../src/components/***/README.md`);
+function parseMarkdown(files) {
   console.log();
   console.log('🔎 Parsing examples in component README.md files:');
   console.log();
@@ -48,6 +62,9 @@ export default function parseMarkdown() {
       'https://github.com/Shopify/polaris-react/blob/master/documentation/Component%20READMEs.md#troubleshooting',
     );
   }
+
+  console.log();
+  console.log('🔎 Parsing examples in component README.md files complete');
 
   return parsedExamples;
 }
