@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 
-import fs from 'fs';
-import glob from 'glob';
-import chalk from 'chalk';
-import grayMatter from 'gray-matter';
-import transpileExample from './transpileExample';
+const fs = require('fs');
+const glob = require('glob');
+const chalk = require('chalk');
+const grayMatter = require('gray-matter');
+const transpileExample = require('./transpileExample');
 
 module.exports = function loader() {
   const files = glob.sync(`${__dirname}/../src/components/***/README.md`);
@@ -69,7 +69,7 @@ function parseMarkdown(files) {
   return parsedExamples;
 }
 
-function stripCodeBlock(block: string) {
+function stripCodeBlock(block) {
   return block
     .replace(/```jsx/, '')
     .replace('```', '')
