@@ -3,18 +3,21 @@ const {
   svgOptions: svgOptimizationOptions,
 } = require('@shopify/images/optimize');
 const postcssShopify = require('postcss-shopify');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 
 const ICON_PATH_REGEX = /icons\//;
 const IMAGE_PATH_REGEX = /\.(jpe?g|png|gif|svg)$/;
 
 module.exports = {
   target: 'web',
-  mode: 'development',
+  mode: 'production',
   devtool: 'source-map',
   stats: {warnings: false},
   entry: [
+    'react-hot-loader/patch',
     '@shopify/polaris/styles/global.scss',
-    path.join(__dirname, 'index.tsx'),
+    path.join(__dirname, 'app/index.tsx'),
   ],
   output: {
     filename: '[name].js',
@@ -53,12 +56,26 @@ module.exports = {
       '@shopify/polaris': path.resolve(__dirname, '..', 'src'),
     },
   },
-  plugins: [],
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: path.resolve(
+        __dirname,
+        'build/bundle-analysis/report.html',
+      ),
+      generateStatsFile: true,
+      statsFilename: path.resolve(
+        __dirname,
+        'build/bundle-analysis/stats.json',
+      ),
+      openAnalyzer: false,
+    }),
+  ],
   module: {
     rules: [
       {
         test: /\.md$/,
-        use: [{loader: `${__dirname}/parseMarkdown.js`}],
+        use: [{loader: `${__dirname}/webpack/parseMarkdown.js`}],
       },
       {
         test(resource) {

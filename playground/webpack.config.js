@@ -15,12 +15,13 @@ module.exports = {
   devServer: {
     port: process.env.PORT || 8080,
     disableHostCheck: true,
+    historyApiFallback: true,
     stats: {warnings: false},
   },
   entry: [
     'react-hot-loader/patch',
     '@shopify/polaris/styles/global.scss',
-    path.join(__dirname, 'index.tsx'),
+    path.join(__dirname, 'app/index.tsx'),
   ],
   output: {
     filename: '[name].js',
@@ -62,6 +63,10 @@ module.exports = {
   plugins: [],
   module: {
     rules: [
+      {
+        test: /\.md$/,
+        use: [{loader: `${__dirname}/webpack/parseMarkdown.js`}],
+      },
       {
         test(resource) {
           return ICON_PATH_REGEX.test(resource) && resource.endsWith('.svg');

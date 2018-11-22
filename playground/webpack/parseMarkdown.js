@@ -7,7 +7,7 @@ const grayMatter = require('gray-matter');
 const transpileExample = require('./transpileExample');
 
 module.exports = function loader() {
-  const files = glob.sync(`${__dirname}/../src/components/***/README.md`);
+  const files = glob.sync(`${__dirname}/../../src/components/***/README.md`);
 
   // Treat all files as depdendencies so that if any of them change then we
   // reparse all of them

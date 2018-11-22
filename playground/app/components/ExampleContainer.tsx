@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-export interface ExampleProps {
-  children?: React.ReactNode;
+export interface ExampleContainerProps {
+  children?: any;
 }
 
 /* This is to prevent false positives in visual regression testing.
@@ -12,6 +12,6 @@ const containerStyle = {
   margin: '0 10px',
 };
 
-export default function Example({children}: ExampleProps) {
+export default function ExampleContainer({children}: ExampleContainerProps) {
   return <div style={containerStyle}>{children}</div>;
 }
