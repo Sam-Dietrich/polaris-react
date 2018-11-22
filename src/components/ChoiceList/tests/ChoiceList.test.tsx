@@ -103,6 +103,27 @@ describe('<ChoiceList />', () => {
         expect(choiceElements.contains(children)).toBe(true);
       });
 
+      it('renders a choice with children wrapper div when choice is selected', () => {
+        const selectedIndexes = [2];
+        const selected = selectedIndexes.map((index) => choices[index].value);
+
+        choices = [
+          choices[0],
+          choices[1],
+          {
+            ...choices[2],
+            renderChildren: renderChildrenSpy,
+          },
+        ] as any;
+
+        const choiceElements = shallowWithAppProvider(
+          <ChoiceList selected={selected} choices={choices} />,
+        );
+
+        expect(renderChildrenSpy).toHaveBeenCalled();
+        expect(choiceElements.find('div').exists()).toBeTruthy();
+      });
+
       it('does not render a choice with children content when choice is not selected', () => {
         choices = [
           choices[0],
@@ -119,6 +140,24 @@ describe('<ChoiceList />', () => {
 
         expect(renderChildrenSpy).toHaveBeenCalled();
         expect(choiceElements.contains(children)).toBe(false);
+      });
+
+      it('does not render a choice with children wrapper div when choice is not selected', () => {
+        choices = [
+          choices[0],
+          choices[1],
+          {
+            ...choices[2],
+            renderChildren: renderChildrenSpy,
+          },
+        ] as any;
+
+        const choiceElements = shallowWithAppProvider(
+          <ChoiceList selected={[]} choices={choices} />,
+        );
+
+        expect(renderChildrenSpy).toHaveBeenCalled();
+        expect(choiceElements.find('div').exists()).toBeFalsy();
       });
     });
 
