@@ -30,7 +30,7 @@ if (sha) {
 
 function buildPackages() {
   execSync(
-    'yarn run webpack --config playground/webpack.config.shrink-ray.js',
+    'yarn run webpack --config playground/webpack.config.js --env.production',
     {
       stdio: 'inherit',
     },

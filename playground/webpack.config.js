@@ -3,14 +3,16 @@ const {
   svgOptions: svgOptimizationOptions,
 } = require('@shopify/images/optimize');
 const postcssShopify = require('postcss-shopify');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 
 const ICON_PATH_REGEX = /icons\//;
 const IMAGE_PATH_REGEX = /\.(jpe?g|png|gif|svg)$/;
 
-module.exports = {
+module.exports = (env = {production: false}) => ({
   target: 'web',
-  mode: 'development',
-  devtool: 'eval',
+  mode: env.production ? 'production' : 'development',
+  devtool: env.production ? 'source-map' : 'eval',
   stats: {warnings: false},
   devServer: {
     port: process.env.PORT || 8080,
@@ -60,7 +62,23 @@ module.exports = {
       '@shopify/polaris': path.resolve(__dirname, '..', 'src'),
     },
   },
-  plugins: [],
+  plugins: env.production
+    ? [
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          reportFilename: path.resolve(
+            __dirname,
+            'build/bundle-analysis/report.html',
+          ),
+          generateStatsFile: true,
+          statsFilename: path.resolve(
+            __dirname,
+            'build/bundle-analysis/stats.json',
+          ),
+          openAnalyzer: false,
+        }),
+      ]
+    : [],
   module: {
     rules: [
       {
@@ -172,4 +190,4 @@ module.exports = {
       },
     ],
   },
-};
+});
