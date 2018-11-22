@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Label, Labelled} from 'components';
+import {Label, Labelled, DisplayText} from 'components';
 import {mountWithAppProvider} from 'test-utilities';
 import DropZone from '../DropZone';
 
@@ -54,7 +54,7 @@ describe('<DropZone />', () => {
     expect(spy).toBeCalledWith(files, files, []);
   });
 
-  it('calls the onDrop callback corrently when it accepts only jpeg', () => {
+  it('calls the onDrop callback correctly when it accepts only jpeg', () => {
     const dropZone = mountWithAppProvider(
       <DropZone onDrop={spy} accept="image/jpeg" />,
     );
@@ -63,7 +63,7 @@ describe('<DropZone />', () => {
     expect(spy).toBeCalledWith(files, acceptedFiles, rejectedFiles);
   });
 
-  it('calls the onDropAccepted callback corrently when it accepts only jpeg', () => {
+  it('calls the onDropAccepted callback correctly when it accepts only jpeg', () => {
     const dropZone = mountWithAppProvider(
       <DropZone onDropAccepted={spy} accept="image/jpeg" />,
     );
@@ -72,7 +72,7 @@ describe('<DropZone />', () => {
     expect(spy).toBeCalledWith(acceptedFiles);
   });
 
-  it('calls the onDropRejected callback corrently when it accepts only jpeg', () => {
+  it('calls the onDropRejected callback correctly when it accepts only jpeg', () => {
     const dropZone = mountWithAppProvider(
       <DropZone onDropRejected={spy} accept="image/jpeg" />,
     );
@@ -205,6 +205,34 @@ describe('<DropZone />', () => {
         'labelHidden',
         true,
       );
+    });
+  });
+
+  describe('overlayText', () => {
+    it('renders an overlay with the overlayText on dragEnter', () => {
+      const overlayText = 'overlay text';
+      const dropZone = mountWithAppProvider(
+        <DropZone overlayText={overlayText} />,
+      );
+      const event = createEvent('dragenter');
+      dropZone.getDOMNode().dispatchEvent(event);
+      dropZone.update();
+      const displayText = dropZone.find(DisplayText);
+      expect(displayText.contains(overlayText)).toBe(true);
+    });
+  });
+
+  describe('errorOverlayText', () => {
+    it('renders an overlay with the errorOverlayText on dragEnter when a non accepted file type is dragged', () => {
+      const errorOverlayText = "can't drop this";
+      const dropZone = mountWithAppProvider(
+        <DropZone errorOverlayText={errorOverlayText} accept="image/gif" />,
+      );
+      const event = createEvent('dragenter');
+      dropZone.getDOMNode().dispatchEvent(event);
+      dropZone.update();
+      const displayText = dropZone.find(DisplayText);
+      expect(displayText.contains(errorOverlayText)).toBe(true);
     });
   });
 });
